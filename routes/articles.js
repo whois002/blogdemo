@@ -20,18 +20,23 @@ router.get('/', function (req, res, next) {
     }
 
     Article.find(condition)
-    .select('title content images visit_count comment_count like_count publish_time')
-    .skip(startRow)
-    .limit(itemsPerPage)
-    .sort(sort)
-        .exec().then(function (articles) {
-        console.log("--------------");
-        console.log(arguments);
-        console.log(articles);
-        res.render('articles', {
-            articles: articles
+        .select('title content cover visit_count comment_count like_count publish_time')
+        .skip(startRow)
+        .limit(itemsPerPage)
+        .sort(sort)
+        .exec().then(
+        function (articles) {
+            console.log("--------------");
+            console.log(arguments);
+            res.render('articles', {
+                articles: articles
+            });
+        }).catch(
+        function (err) {
+            console.error(err);
+            res.send(err);
         });
-    });
+
 });
 
 router.get('/create', function (req, res, next) {

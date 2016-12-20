@@ -15,7 +15,12 @@ var ArticleSchema = new Schema({
         type: String,
         unique: true
     },
+    //概要
+    summary: String,
+    //内容
     content: String,
+    //首页图片
+    cover:String,
     //存储文章所用到的图片
     images: {
         type: Array
@@ -68,7 +73,9 @@ ArticleSchema
             '_id': this._id,
             'title': this.title,
             'content': this.content,
+            'summary': this.summary,
             'section': this.section,
+            'cover': this.cover,
             'images': this.images,
             'visit_count': this.visit_count,
             'comment_count': this.comment_count,
@@ -77,7 +84,7 @@ ArticleSchema
         };
     });
 
-var Article = mongoose.model('article', ArticleSchema);
+var Article = mongoose.model('articles', ArticleSchema);
 
 var Promise = require('bluebird');
 Promise.promisifyAll(Article);

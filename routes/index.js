@@ -1,3 +1,5 @@
+var checkLogin = require('../middlewares/check').checkLogin;
+
 module.exports = function (app) {
     app.get('/', function (req, res) {
         res.redirect('/articles');
@@ -6,8 +8,8 @@ module.exports = function (app) {
     app.use('/signin', require('./signin'));
     app.use('/signout', require('./signout'));
     app.use('/articles', require('./articles'));
-    app.use('/post', require('./post'));
-
+    app.use('/article', require('./article'));
+    app.use('/admin', checkLogin, require('./admin'));
     // 404 page
     app.use(function (req, res) {
         if (!res.headersSent) {
