@@ -1,6 +1,9 @@
 var checkLogin = require('../middlewares/check').checkLogin;
 
 module.exports = function (app) {
+    app.get('/index', function (req, res) {
+        res.redirect('/articles');
+    });
     app.get('/', function (req, res) {
         res.redirect('/articles');
     });
