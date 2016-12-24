@@ -2,7 +2,8 @@
  * 文章表
  */
 'use strict';
-
+var moment = require('moment');
+//var objectIdToTimestamp = require('objectid-to-timestamp');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
@@ -66,24 +67,43 @@ var ArticleSchema = new Schema({
     }
 });
 
+// ArticleSchema
+//     .virtual('info')
+//     .get(function () {
+//         return {
+//             '_id': this._id,
+//             'title': this.title,
+//             'content': this.content,
+//             'summary': this.summary,
+//             'section': this.section,
+//             'cover': this.cover,
+//             'images': this.images,
+//             'visit_count': this.visit_count,
+//             'comment_count': this.comment_count,
+//             'like_count': this.like_count,
+//             'publish_time': moment(this.publish_time).format("YYYY-MM-DD HH:mm")
+//         };
+//     });
+
 ArticleSchema
-    .virtual('info')
+    .virtual('postInfo')
     .get(function () {
         return {
             '_id': this._id,
             'title': this.title,
-            'content': this.content,
             'summary': this.summary,
             'section': this.section,
             'cover': this.cover,
-            'images': this.images,
+            'status': this.status,
             'visit_count': this.visit_count,
             'comment_count': this.comment_count,
-            'like_count': this.like_count,
-            'publish_time': this.publish_time
+            'publish_time': moment(this.publish_time).format("YYYY-MM-DD HH:mm"),
+            'updated': moment(this.updated).format("YYYY-MM-DD HH:mm")
         };
     });
 
+// ArticleSchema.set('toJSON', { virtuals: true })
+ ArticleSchema.set('toObject', { virtuals: true });
 var Article = mongoose.model('articles', ArticleSchema);
 
 var Promise = require('bluebird');

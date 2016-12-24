@@ -13,6 +13,8 @@ module.exports = function (app) {
     app.use('/articles', require('./articles'));
     app.use('/article', require('./article'));
     app.use('/admin', checkLogin, require('./admin'));
+    app.use('/admin/posts', checkLogin, require('./posts'));
+    app.use('/admin/post', checkLogin, require('./post'));
     // 404 page
     app.use(function (req, res) {
         if (!res.headersSent) {
