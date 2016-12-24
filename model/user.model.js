@@ -157,6 +157,10 @@ UserSchema.methods = {
     },
     //验证用户密码
     authenticate: function(plainText) {
+        console.log('authenticate');
+        console.log(plainText);
+        console.log(this.encryptPassword(plainText));
+        console.log(this.hashedPassword);
         return this.encryptPassword(plainText) === this.hashedPassword;
     },
     //生成盐

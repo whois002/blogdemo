@@ -23,10 +23,9 @@ router.post('/', checkNotLogin, function (req, res, next) {
         }
         // 检查密码是否匹配
         console.log('-------------------pasword');
-        console.log(sha1(password));
         console.log(user);
         //if (sha1(password) !== user.password) {
-        if(user.authenticate(password)){
+        if(!user.authenticate(password)){
             req.flash('error', '用户名或密码错误');
             return res.redirect('back');
         }
@@ -35,15 +34,11 @@ router.post('/', checkNotLogin, function (req, res, next) {
         delete user.password;
         req.session.user = user;
         // 跳转到主页
-        res.redirect('/index');
+        res.redirect('admin');
     }).catch(
         function (err) {
-            // 用户名被占用则跳回注册页，而不是错误页
-            if (err.message.match('E11000 duplicate key')) {
-                req.flash('error', '用户名已被占用');
-                return res.redirect('/signup');
-            }
-            next(err);
+            req.flash('error', '登录时遇到系统错误');
+            return res.redirect('back');
         }
     );
 });
