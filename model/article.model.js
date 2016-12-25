@@ -64,7 +64,11 @@ var ArticleSchema = new Schema({
     updated: {
         type: Date,
         default: Date.now
-    }
+    },
+    comments:{
+        type: Schema.Types.ObjectId,
+        ref: 'Comment'
+    },
 });
 
 // ArticleSchema
