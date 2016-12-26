@@ -1,17 +1,17 @@
 var checkLogin = require('../middlewares/check').checkLogin;
 
 module.exports = function (app) {
-    app.get('/index', function (req, res) {
-        res.redirect('/articles');
-    });
-    app.get('/', function (req, res) {
-        res.redirect('/articles');
-    });
+    app.get('/index', require('./articles'));
+    app.get('/', require('./articles'));
+    app.use('/articles', require('./articles'));
+    app.use('/article', require('./article'));
+    app.use('/comment', require('./comment'));
+    
     app.use('/signup', require('./signup'));
     app.use('/signin', require('./signin'));
     app.use('/signout', require('./signout'));
-    app.use('/articles', require('./articles'));
-    app.use('/article', require('./article'));
+
+
     app.use('/admin', checkLogin, require('./admin'));
     // app.use('/admin/posts', checkLogin, require('./posts'));
     // app.use('/admin/post', checkLogin, require('./post'));

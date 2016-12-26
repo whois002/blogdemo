@@ -11,7 +11,7 @@ var CommentSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Article'
   },
-  user_id:{
+  author:{
     type: Schema.Types.ObjectId,
     ref:'User'
   },

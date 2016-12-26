@@ -3,7 +3,7 @@ var sha1 = require('sha1');
 var express = require('express');
 var router = express.Router();
 
-var User = require('../model/user.model');
+var User = require('../dao/user.dao');
 var checkNotLogin = require('../middlewares/check').checkNotLogin;
 
 // GET /signup 注册页

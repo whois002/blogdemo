@@ -4,13 +4,13 @@ var router = express.Router();
 var Comment = require('../dao/comment.dao');
 
 // POST /comment/:postId 创建一条留言
-router.post('/comment/:postId', function (req, res, next) {
+router.post('/:postId', function (req, res, next) {
     var author = req.session.user._id;
     var postId = req.params.postId;
     var content = req.fields.content;
     var comment = {
         author: author,
-        postId: postId,
+        aId: postId,
         content: content
     };
 
@@ -22,3 +22,5 @@ router.post('/comment/:postId', function (req, res, next) {
         })
         .catch(next);
 });
+
+module.exports = router;

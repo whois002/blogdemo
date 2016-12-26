@@ -108,7 +108,7 @@ router.get('/post/remove/:postId', function (req, res, next) {
 
 
 // GET /comment/remove/:commentId 删除一条留言
-router.post('/comment/remove/:commentId', function (req, res, next) {
+router.get('/comment/remove/:commentId', function (req, res, next) {
     var commentId = req.params.commentId;
 
     Comment.delCommentById(commentId)

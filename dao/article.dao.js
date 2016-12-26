@@ -42,7 +42,7 @@ const ArticleDao = {
     },
 
     // 通过文章 id 给 pv 加 1
-    incPv: function incPv(postId) {
+    incPv: function (postId) {
         return Article
             .update({_id: postId}, {$inc: {pv: 1}})
             .exec();

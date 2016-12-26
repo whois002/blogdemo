@@ -8,8 +8,8 @@ const UserDao = {
             .exec();
     },
 
-    create: function create(user) {
-        return User.create(user).exec();
+    create: function (user) {
+        return User.create(user);
     },
 
 }
