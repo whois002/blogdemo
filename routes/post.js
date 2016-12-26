@@ -51,8 +51,27 @@ router.get('/:postId', function (req, res, next) {
     var postId = req.params.postId;
     var author = req.session.user._id;
 
-    Article.findOne({_id:postId}).populate('comments')
-        .select('title summary section cover status visit_count comment_count publish_time comments content')
+    Promise.all([
+        Article.getPostById(postId),// 获取文章信息
+        CommentModel.getComments(postId),// 获取该文章所有留言
+        PostModel.incPv(postId)// pv 加 1
+    ])
+        .then(function (result) {
+            var post = result[0];
+            var comments = result[1];
+            if (!post) {
+                throw new Error('该文章不存在');
+            }
+
+            res.render('post', {
+                post: post,
+                comments: comments
+            });
+        })
+        .catch(next);
+
+    Article.findOne({_id:postId})
+        .select('title summary section cover status visit_count comment_count publish_time content')
         .exec().then(
         function (article) {
             console.log("--------------");

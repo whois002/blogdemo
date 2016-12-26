@@ -41,22 +41,12 @@ router.post('/', checkNotLogin, function (req, res, next) {
     //password = sha1(password);
 
     // 待写入数据库的用户信息
-    //var newUser = new User(req.body);
     var user = {
         nickname: nickname,
         password: password
     };
-    console.log('user');
-    console.log(user);
-    User.createAsync(user).then(
+    User.create(user).then(
         function (user) {
-            // Logs.create({
-            //     uid: req.user._id,
-            //     content: "创建新用户 " + (user.email || user.nickname),
-            //     type: "user"
-            // });
-            // return res.status(200).json({success: true, user_id: user._id});
-            // 将用户信息存入 session
             delete user.password;
             req.session.user = user;
             // 写入 flash
@@ -66,8 +56,6 @@ router.post('/', checkNotLogin, function (req, res, next) {
         }
     ).catch(
         function (err) {
-            console.log("-------------err");
-            console.log(err);
             // 用户名被占用则跳回注册页，而不是错误页
             // if (err.message.match('E11000 duplicate key')) {
             //     req.flash('error', '用户名已被占用');

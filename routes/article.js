@@ -1,26 +1,31 @@
 var express = require('express');
 var router = express.Router();
 
-var PostModel = require('../models/posts');
-var CommentModel = require('../models/comments');
-var checkLogin = require('../middlewares/check').checkLogin;
-var Article = require('../model/article.model');
+var Common = require('../dao/comment.dao');
+var Article = require('../dao/article.dao');
 
 // GET /post/:postId 单独一篇的文章页
 router.get('/:postId', function (req, res, next) {
     var postId = req.params.postId;
-    Article.findOne({_id: postId})
-        //.populate('tags')
-        .exec().then(
-        function (article) {
+
+    Promise.all([
+        Article.findById(postId),// 获取文章信息
+        Common.findByAId(postId),// 获取该文章所有留言
+        Article.incPv(postId)// pv 加 1
+    ])
+        .then(function (result) {
+            var article = result[0];
+            var comments = result[1];
+            if (!article) {
+                throw new Error('该文章不存在');
+            }
+
             res.render('article', {
-                article: article
+                article: article,
+                comments: comments
             });
-        }).catch(
-        function (err) {
-            console.error(err);
-            res.send(err);
-        });
+        })
+        .catch(next);
 });
 
 module.exports = router;

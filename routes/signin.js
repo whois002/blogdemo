@@ -1,7 +1,7 @@
-var sha1 = require('sha1');
+// var sha1 = require('sha1');
 var express = require('express');
 var router = express.Router();
-var User = require('../model/user.model');
+var User = require('../dao/user.dao');
 var checkNotLogin = require('../middlewares/check').checkNotLogin;
 
 // GET /signin 登录页
@@ -14,16 +14,12 @@ router.post('/', checkNotLogin, function (req, res, next) {
     var nickname = req.fields.nickname;
     var password = req.fields.password;
 
-    User.findOneAsync({
-        nickname: nickname
-    }).then(function (user) {
+    User.findByNickName(nickname).then(function (user) {
         if (!user) {
             req.flash('error', '用户不存在');
             return res.redirect('back');
         }
         // 检查密码是否匹配
-        console.log('-------------------pasword');
-        console.log(user);
         //if (sha1(password) !== user.password) {
         if(!user.authenticate(password)){
             req.flash('error', '用户名或密码错误');

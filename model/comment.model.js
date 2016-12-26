@@ -7,6 +7,10 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var CommentSchema = new Schema({
+  aId:{
+    type: Schema.Types.ObjectId,
+    ref: 'Article'
+  },
   user_id:{
     type: Schema.Types.ObjectId,
     ref:'User'
