@@ -35,33 +35,35 @@ router.get('/posts', function (req, res, next) {
 
 });
 
-// GET /post/:postId/edit 更新文章页
+// GET /post
+router.get('/post', function (req, res, next) {
+    res.render('post', {
+        article: {}
+    });
+});
+
+// GET /post/:postId 更新文章页
 router.get('/post/:postId', function (req, res, next) {
     var postId = req.params.postId;
-    var author = req.session.user._id;
-
-    Promise.all([
-        Article.findById(postId),// 获取文章信息
-        Comment.findByAId(postId),// 获取该文章所有留言
-        Article.incPv(postId)// pv 加 1
-    ]).then(function (result) {
-        var article = result[0];
-        var comments = result[1];
+    Article.findById(postId).then(function (article) {
         if (!article) {
             throw new Error('该文章不存在');
         }
         res.render('post', {
-            article: article,
-            comments: comments
+            article: article
         });
     }).catch(next);
+
 });
 
 // POST /post 发表一篇文章
-router.post('/post/', function (req, res, next) {
+router.post('/post', function (req, res, next) {
     var author = req.session.user._id;
+    var _id = req.fields._id;
     var title = req.fields.title;
     var content = req.fields.content;
+    var pv = req.fields.pv;
+    var status = req.fields.status;
 
     // 校验参数
     try {
@@ -77,18 +79,20 @@ router.post('/post/', function (req, res, next) {
     }
 
     var post = {
+        _id: _id,
         author: author,
         title: title,
         content: content,
-        pv: 0
+        status: status,
+        pv: pv
     };
 
     Article.save(post)
-        .then(function (err, nPost) {
+        .then(function (article) {
             req.flash('success', '编辑文章成功');
             // 编辑成功后跳转到上一页
-            res.redirect(`/admin/post/${nPost._id}`);
-        })
+            res.redirect(`/admin/post/${article._id}`);
+        }).catch(next);
 });
 
 
@@ -98,10 +102,10 @@ router.get('/post/remove/:postId', function (req, res, next) {
     var author = req.session.user._id;
 
     Article.remove(postId)
-        .then(function (err) {
+        .then(function () {
             req.flash('success', '删除文章成功');
             // 删除成功后跳转到主页
-            res.redirect('/admin/posts');
+            res.redirect('back');
         })
         .catch(next);
 });

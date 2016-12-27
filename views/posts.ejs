@@ -1,7 +1,19 @@
 <%- include('header') %>
+<div class="container nav">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <a href="/posts"><h1>myblog</h1></a>
+            <p>my first blog</p>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <ul>
+        <li><a href="/admin/post">新建</a></li>
+    </ul>
+</div>
 <section class="content-wrap">
     <div class="container">
-
         <% articles.forEach(function (article) { %>
         <div class="row">
             <div class="col-md-2"><a href="/article/<%= article._id %>"><%= article.title %></a></div>
@@ -22,10 +34,10 @@
             </div>
             <div class="col-md-2">
                 <a href="/admin/post/<%= article._id %>">编辑</a>
+                <a href="/admin/post/remove/<%= article._id %>">删除</a>
             </div>
         </div>
         <% }) %>
-
     </div>
 </section>
 <%- include('footer') %>

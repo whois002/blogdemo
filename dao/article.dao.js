@@ -4,7 +4,7 @@ var Article = require('../model/article.model');
 const ArticleDao = {
     findById: function (postId, author) {
         return Article.findOne({_id: postId})
-            .select('title summary section cover status visit_count comment_count publish_time content')
+        //.select('title summary section cover status visit_count comment_count publish_time content')
             .exec();
     },
 
@@ -27,25 +27,28 @@ const ArticleDao = {
     },
     // 创建,或更新一篇文章
     save: function (article) {
+        article.status = article.status ? 1 : 0;
         if (article._id) {
             var id = article._id;
             delete  article._id;
-            Article.update({_id: id}, article).exec();
+            return Article.findByIdAndUpdate({_id: id}, article);
         }
-        else
-            return Article.create(article).exec();
+        else {
+            delete article._id;
+            article.pv = 0;
+            return Article.create(article);
+        }
     },
 
     //删除文章
     remove: function (postId) {
-        Article.remove({_id: postId}).exec();
+        return Article.findByIdAndRemove(postId);
     },
 
     // 通过文章 id 给 pv 加 1
     incPv: function (postId) {
         return Article
-            .update({_id: postId}, {$inc: {pv: 1}})
-            .exec();
+            .update({_id: postId}, {$inc: {pv: 1}});
     },
 }
 
