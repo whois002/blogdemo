@@ -88,10 +88,12 @@ router.post('/post', function (req, res, next) {
     };
 
     Article.save(post)
-        .then(function (article) {
+        .then(function (nid) {
+            // res.send(article);
+            // return;
             req.flash('success', '编辑文章成功');
             // 编辑成功后跳转到上一页
-            res.redirect(`/admin/post/${article._id}`);
+            res.redirect(`/admin/post/${nid}`);
         }).catch(next);
 });
 

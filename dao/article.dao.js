@@ -30,19 +30,24 @@ const ArticleDao = {
         article.status = article.status ? 1 : 0;
         if (article._id) {
             var id = article._id;
-            delete  article._id;
-            return Article.findByIdAndUpdate({_id: id}, article);
+            //delete  article._id;
+            return Article.update({_id: id}, article).then(function (raw) {
+                return id;
+            });
         }
         else {
             delete article._id;
             article.pv = 0;
-            return Article.create(article);
+            return Article.create(article).then(function (raw) {
+                return raw._id;
+            });
         }
     },
 
     //删除文章
     remove: function (postId) {
-        return Article.findByIdAndRemove(postId);
+        //return Article.findByIdAndRemove(postId);
+        //return Article.remove({_id: postId});
     },
 
     // 通过文章 id 给 pv 加 1
