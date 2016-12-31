@@ -14,6 +14,27 @@
 </div>
 <section class="content-wrap">
     <div class="container">
+        <div class="row">
+            <div class="col-md-2">标题</div>
+            <div class="col-md-2">
+                发布状态
+            </div>
+            <div class="col-md-1">
+                访问数
+            </div>
+            <div class="col-md-1">
+                评论数
+            </div>
+            <div class="col-md-2">
+                发布时间
+            </div>
+            <div class="col-md-2">
+                更新时间
+            </div>
+            <div class="col-md-2">
+                操作
+            </div>
+        </div>
         <% articles.forEach(function (article) { %>
         <div class="row">
             <div class="col-md-2"><a href="/article/<%= article._id %>"><%= article.title %></a></div>

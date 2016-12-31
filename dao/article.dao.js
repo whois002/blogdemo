@@ -3,8 +3,8 @@ var Article = require('../model/article.model');
 
 const ArticleDao = {
     findById: function (postId, author) {
-        return Article.findOne({_id: postId})
-        //.select('title summary section cover status visit_count comment_count publish_time content')
+        return Article.findOne({_id: postId}).populate('section')
+        //.select('title summary section cover statusFormat visit_count comment_count publish_time content')
             .exec();
     },
 

@@ -6,7 +6,8 @@
   "scripts": {
     "test": "node --harmony ./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha",
     "start": "NODE_ENV=production pm2 start index.js --node-args='--harmony' --name 'myblog'",
-    "server": "node index.js"
+    "server": "node index.js",
+    "setup": "node /config/seed.js"
   },
   "author": "nswbmw",
   "license": "MIT",

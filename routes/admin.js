@@ -3,6 +3,7 @@ var router = express.Router();
 
 var Article = require('../dao/article.dao');
 var Comment = require('../dao/comment.dao');
+var Dictionary = require('../dao/dictionary.dao')
 
 // GET /admin
 router.get('/', function (req, res, next) {
@@ -23,7 +24,7 @@ router.get('/posts', function (req, res, next) {
         .then(function (articles) {
             res.render('posts', {
                 articles: articles.map(function (article) {
-                    return article.postInfo;
+                    return article.postViewInfo;
                 })
             });
         }).catch(
@@ -45,14 +46,26 @@ router.get('/post', function (req, res, next) {
 // GET /post/:postId 更新文章页
 router.get('/post/:postId', function (req, res, next) {
     var postId = req.params.postId;
-    Article.findById(postId).then(function (article) {
-        if (!article) {
-            throw new Error('该文章不存在');
-        }
-        res.render('post', {
-            article: article
-        });
-    }).catch(next);
+
+    Promise.all([
+        Article.findById(postId),// 获取文章信息
+        Dictionary.find()
+    ])
+        .then(function (result) {
+            console.log('------Article');
+            console.log(result[0]);
+            var article = result[0];
+            var sections = result[1];
+            if (!article) {
+                throw new Error('该文章不存在');
+            }
+
+            res.render('post', {
+                article: article,
+                sections: sections
+            });
+        })
+        .catch(next);
 
 });
 
@@ -60,6 +73,7 @@ router.get('/post/:postId', function (req, res, next) {
 router.post('/post', function (req, res, next) {
     var author = req.session.user._id;
     var _id = req.fields._id;
+    var section = req.fields.section;
     var title = req.fields.title;
     var content = req.fields.content;
     var pv = req.fields.pv;
@@ -80,6 +94,7 @@ router.post('/post', function (req, res, next) {
 
     var post = {
         _id: _id,
+        section:section,
         author: author,
         title: title,
         content: content,

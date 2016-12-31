@@ -15,6 +15,18 @@
             <input type="text" name="title" value="<%= article.title %>" id="title" class="form-control"/>
         </div>
         <div class="form-group">
+            <label for="section">分类</label>
+            <select class="form-control" id="section" name="section">
+                <% sections.forEach(function (section) { %>
+                <% if(section._id.toString() == article.section._id.toString()) { %>
+                <option value="<%= section._id %>" selected="selected"><%= section.name %></option>
+                <% } else { %>
+                <option value="<%= section._id %>"><%= section.name %></option>
+                <% } %>
+                <% }) %>
+            </select>
+        </div>
+        <div class="form-group">
             <label for="content">浏览量</label>
             <input type="text" value="<%= article.pv %>" name="pv" class="form-control"/>
         </div>
@@ -22,8 +34,9 @@
             <% if(article.status) { %>
             <input type="checkbox" value="1" name="status" checked="checked"/>
             <% } else { %>
-            <input type="checkbox" value="1" name="status" />
-            <% } %>发布
+            <input type="checkbox" value="1" name="status"/>
+            <% } %>
+            发布
         </div>
         <div class="form-group">
             <label for="content">内容</label>

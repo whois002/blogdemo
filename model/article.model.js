@@ -5,6 +5,15 @@
 var moment = require('moment');
 //var objectIdToTimestamp = require('objectid-to-timestamp');
 var mongoose = require('mongoose');
+
+function statusFormat(status) {
+    return status ? '发布' : '删除';
+}
+
+function dateTimeFormat(dateTime) {
+    return moment(dateTime).format("YYYY-MM-DD HH:mm")
+}
+
 var Schema = mongoose.Schema;
 
 var ArticleSchema = new Schema({
@@ -27,7 +36,10 @@ var ArticleSchema = new Schema({
         type: Array
     },
     //分类
-    section: String,
+    section: {
+        type: Schema.Types.ObjectId,
+        ref: 'Dictionary'
+    },
     //一篇文章可以有多个标签
     tags: [{
         type: Schema.Types.ObjectId,
@@ -91,7 +103,7 @@ var ArticleSchema = new Schema({
 //     });
 
 ArticleSchema
-    .virtual('postInfo')
+    .virtual('postViewInfo')
     .get(function () {
         return {
             '_id': this._id,
@@ -99,11 +111,11 @@ ArticleSchema
             'summary': this.summary,
             'section': this.section,
             'cover': this.cover,
-            'status': this.status,
+            'status': statusFormat(this.status),
             'visit_count': this.visit_count,
             'comment_count': this.comment_count,
-            'publish_time': moment(this.publish_time).format("YYYY-MM-DD HH:mm"),
-            'updated': moment(this.updated).format("YYYY-MM-DD HH:mm")
+            'publish_time': dateTimeFormat(this.publish_time),
+            'updated': dateTimeFormat(this.updated)
         };
     });
 
