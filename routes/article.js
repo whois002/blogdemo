@@ -1,4 +1,5 @@
 var express = require('express');
+var marked = require('marked');
 var router = express.Router();
 
 var Common = require('../dao/comment.dao');
@@ -19,6 +20,8 @@ router.get('/:postId', function (req, res, next) {
             if (!article) {
                 throw new Error('该文章不存在');
             }
+
+            article.content = marked(article.content);
 
             res.render('article', {
                 article: article,

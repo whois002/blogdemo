@@ -7,7 +7,7 @@ var Article = require('../dao/article.dao');
 //   eg: GET /posts?section=xxx
 router.get('/', function (req, res, next) {
 
-    var section = String(req.query.section);
+    var section = req.query.section;
     var currentPage = req.query.currentPage;
     var itemsPerPage = req.query.itemsPerPage;
     var sortName = req.query.sortName;
@@ -15,8 +15,6 @@ router.get('/', function (req, res, next) {
     Article.find(section, currentPage, itemsPerPage, sortName)
         .then(
             function (articles) {
-                console.log("--------------");
-                console.log(arguments);
                 res.render('articles', {
                     articles: articles
                 });

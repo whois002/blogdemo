@@ -1,4 +1,5 @@
 var moment = require('moment');
+var marked = require('marked');
 var Article = require('../model/article.model');
 
 const ArticleDao = {
@@ -13,14 +14,18 @@ const ArticleDao = {
         var itemsPerPage = (parseInt(itemsPerPage) > 0) ? parseInt(itemsPerPage) : 10;
         var startRow = (currentPage - 1) * itemsPerPage;
 
-        var sort = String(sortName) || "publish_time";
+        var sort = sortName || "publish_time";
         sort = "-" + sort;
 
         var condition = {status: {$gt: 0}};
         if (section) {
-            condition = Object.assign(condition, {section: {$elemMatch: {$eq: section}}});
+            condition = Object.assign(condition, {section: {$eq: section}});
         }
-
+        // console.log(condition);
+        // console.log(startRow);
+        // console.log(itemsPerPage);
+        // console.log(sort);
+        // console.log('------------------');
         return Article.find(condition).skip(startRow)
             .limit(itemsPerPage)
             .sort(sort).exec();
@@ -47,7 +52,7 @@ const ArticleDao = {
     //删除文章
     remove: function (postId) {
         //return Article.findByIdAndRemove(postId);
-        //return Article.remove({_id: postId});
+        return Article.remove({_id: postId});
     },
 
     // 通过文章 id 给 pv 加 1

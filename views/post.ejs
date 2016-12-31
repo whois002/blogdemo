@@ -18,7 +18,7 @@
             <label for="section">分类</label>
             <select class="form-control" id="section" name="section">
                 <% sections.forEach(function (section) { %>
-                <% if(section._id.toString() == article.section._id.toString()) { %>
+                <% if(article.section && article.section._id.toString() === section._id.toString()) { %>
                 <option value="<%= section._id %>" selected="selected"><%= section.name %></option>
                 <% } else { %>
                 <option value="<%= section._id %>"><%= section.name %></option>
