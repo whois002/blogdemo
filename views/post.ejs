@@ -1,4 +1,4 @@
-<%- include('header') %>
+<%- include('postHeader') %>
 <div class="container nav">
     <div class="row">
         <div class="col-md-12 text-center">
@@ -39,13 +39,212 @@
             发布
         </div>
         <div class="form-group">
+            <label for="uploader">封面图片</label>
+            <div id="uploader" class="wu-example">
+                <!--用来存放文件信息-->
+                <div id="thelist" class="uploader-list"></div>
+                <div>
+                    <div id="picker">选择图片</div>
+                    <div id="ctlBtn" class="btn btn-default" style="display: none">开始上传</div>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
             <label for="content">内容</label>
             <textarea name="content" rows="15" id="content" class="form-control"><%= article.content %></textarea>
         </div>
 
         <input type="submit" class="btn btn-default btn-block" value="发布"/>
         <input type="hidden" value="<%= article._id %>" name="_id">
-
+        <input type="hidden" id="cover" name="cover" value="<%= article.cover %>">
     </form>
 </div>
+
+<script type="text/javascript">
+    $(function () {
+        // 优化retina, 在retina下这个值是2
+        var ratio = window.devicePixelRatio || 1,
+                // 缩略图大小
+                thumbnailWidth = 90 * ratio,
+                thumbnailHeight = 90 * ratio,
+                thumbnailDir = "/uploadImg/",
+                $list = $("#thelist"),
+                $btn = $("#ctlBtn"),
+                state = "pending",
+                cover =$("#cover");
+
+        var uploader = WebUploader.create({
+            auto: true,
+            fileVal: "upfile",
+            swf: 'Uploader.swf',
+
+            // 文件接收服务端。
+            server: '/admin/upload?action=uploadimage',
+
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: '#picker',
+
+            // 不压缩image, 默认如果是jpeg，文件上传前会压缩一把再上传！
+            resize: false,
+            // 只允许选择图片文件。
+            accept: {
+                title: 'Images',
+                extensions: 'gif,jpg,jpeg,bmp,png',
+                mimeTypes: 'image/gif,image/jpeg,image/jpg,image/png'   //指定image/* 选择框 打开会慢
+            }
+        });
+
+        if (cover && cover.val()) {
+            var file = {id: new Date().getTime(), name: "", src: cover.val(), source: null};
+            addImg(file);
+            $('#' + file.id).addClass('upload-state-success').find(".state").text("已上传");
+        }
+
+
+        uploader.on('fileQueued', addImg);
+
+        // 文件上传过程中创建进度条实时显示。
+        uploader.on('uploadProgress', function (file, percentage) {
+            var $li = $('#' + file.id),
+                    $percent = $li.find('.progress-box .sr-only');
+
+            // 避免重复创建
+            if (!$percent.length) {
+                $percent = $('<div class="progress-box"><span class="progress-bar radius"><span class="sr-only" style="width:0%"></span></span></div>').appendTo($li).find('.sr-only');
+            }
+            $li.find(".state").text("上传中");
+            $percent.css('width', percentage * 100 + '%');
+        });
+
+        // 文件上传成功，给item添加成功class, 用样式标记上传成功。
+        uploader.on('uploadSuccess', function (file, response) {
+            $('#' + file.id).addClass('upload-state-success').find(".state").text("已上传");
+            //{"state":"SUCCESS","url":"~/upload/image/20160610/6360115397661450555288026.gif","title":"b6.gif","original":"b6.gif","error":null}
+            if (response) {
+                debugger;
+                if (response.success) {
+                    cover.val(response.files);
+                }
+                else
+                    $('#' + file.id).addClass('upload-state-error').find(".state").text("上传出错");
+            }
+        });
+
+        // 文件上传失败，显示上传出错。
+        uploader.on('uploadError', function (file) {
+            $('#' + file.id).addClass('upload-state-error').find(".state").text("上传出错");
+        });
+
+        // 完成上传完了，成功或者失败，先删除进度条。
+        uploader.on('uploadComplete', function (file) {
+            $('#' + file.id).find('.progress-box').fadeOut();
+        });
+        uploader.on('all', function (type) {
+            console.log(type);
+            if (type === 'startUpload') {
+                $btn.text("开始上传").attr("disabled", false);
+                state = 'uploading';
+            } else if (type === 'stopUpload') {
+                state = 'paused';
+            } else if (type === 'uploadFinished') {
+                state = 'done';
+                $btn.text("已上传").attr("disabled", true);
+            }
+
+            if (state === 'uploading') {
+                $btn.text('暂停上传');
+            } else {
+                $btn.text('开始上传');
+            }
+        });
+
+        function addImg(file) {
+            var $li = $(
+                            '<div id="' + file.id + '" class="item">' +
+                            '<div class="pic-box"><img style="width:' + thumbnailWidth + 'px;height:' + thumbnailHeight + 'px"></div>' +
+                            '<div class="info">' + file.name + '</div>' +
+                            '<p class="state">等待上传...</p>' +
+                            '</div>'
+                    ),
+                    $img = $li.find('img');
+            $list.html($li);
+            // 创建缩略图
+            // 如果为非图片文件，可以不用调用此方法。
+            // thumbnailWidth x thumbnailHeight 为 100 x 100
+            if (file.source)
+                uploader.makeThumb(file, function (error, src) {
+                    if (error) {
+                        $img.replaceWith('<span>不能预览</span>');
+                        return;
+                    }
+
+                    $img.attr('src', src);
+                }, thumbnailWidth, thumbnailHeight);
+            else
+                $img.attr('src', thumbnailDir + file.src);
+            state = "selected";
+        }
+
+
+        $btn.on('click', function () {
+            if (state === 'uploading') {
+                uploader.stop();
+            }
+            else if (state === 'done') {
+                //上传完成
+            }
+            //pending初始化,selected 有选中文件
+            else if (state == "selected")
+                uploader.upload();
+            return false;
+        });
+
+
+//        $('#form-article-add').submit(function () {
+//            if (!$("#Title").val()) {
+//                alert("文章标题必须填写！");
+//                return false;
+//            }
+//
+//            if (!$("#Category").val()) {
+//                alert("分类栏目必须选择！");
+//                return false;
+//            }
+//
+//            jQuery.ajax({
+//
+//                url: '/Admin/Post/ArticleSave',
+//
+//                data: $('#form-article-add').serialize(),
+//
+//                type: "POST",
+//
+//                beforeSend: function () {
+//
+//                },
+//                error: function (data) {
+//                    console.log(data);
+//                    alert("请求失败");
+//                },
+//                success: function (data) {
+//                    console.log(data);
+//                    if (data && data.success) {
+//                        //window.location = "/Admin/ArticleList";
+//                        alert("保存成功");
+//                        closeTab();
+//                    }
+//                    else {
+//                        alert("保存失败！");
+//                    }
+//                }
+//
+//            });
+//
+//            return false;
+//
+//        });
+
+    });
+</script>
 <%- include('footer') %>

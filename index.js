@@ -36,11 +36,7 @@ app.use(session({
 }));
 // flash 中间价，用来显示通知
 app.use(flash());
-// 处理表单及文件上传的中间件
-app.use(require('express-formidable')({
-    uploadDir: path.join(__dirname, 'public/img'),// 上传文件目录
-    keepExtensions: true// 保留后缀
-}));
+
 
 // 设置模板全局常量
 app.locals.blog = {
@@ -68,8 +64,22 @@ app.use(expressWinston.logger({
         })
     ]
 }));
+
+// 上传权限没有校验；上传文件类型的检查
+// 处理表单及文件上传的中间件
+app.use(require('express-formidable')({
+    uploadDir: path.join(__dirname, config.uploadDir),// 上传文件目录
+    keepExtensions: true// 保留后缀
+}));
+
+// 上传结果处理
+require('./middlewares/uploader')(app)({
+    path: '/admin/upload'
+});
+
 // 路由
 routes(app);
+
 // 错误请求的日志
 app.use(expressWinston.errorLogger({
     transports: [
