@@ -41,8 +41,12 @@ var ArticleSchema = new Schema({
         ref: 'Dictionary'
     },
     //一篇文章可以有多个标签
+    // tags: [{
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Tag'
+    // }],
     tags: [{
-        type: Schema.Types.ObjectId,
+        type: String,
         ref: 'Tag'
     }],
     visit_count: {			//访问数

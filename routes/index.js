@@ -6,7 +6,8 @@ module.exports = function (app) {
     app.use('/articles', require('./articles'));
     app.use('/article', require('./article'));
     app.use('/comment', require('./comment'));
-    
+    app.use('/tags', require('./tags'));
+
     app.use('/signup', require('./signup'));
     app.use('/signin', require('./signin'));
     app.use('/signout', require('./signout'));

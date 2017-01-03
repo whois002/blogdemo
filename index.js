@@ -52,6 +52,19 @@ app.use(function (req, res, next) {
     next();
 });
 
+// 上传权限没有校验；上传文件类型的检查
+// 处理表单及文件上传的中间件
+app.use(require('express-formidable')({
+    uploadDir: path.join(__dirname, config.uploadDir),// 上传文件目录
+    keepExtensions: true// 保留后缀
+}));
+
+// 上传结果处理
+require('./middlewares/uploader')(app)({
+    path: '/admin/upload'
+});
+
+
 // 正常请求的日志
 app.use(expressWinston.logger({
     transports: [
@@ -65,17 +78,6 @@ app.use(expressWinston.logger({
     ]
 }));
 
-// 上传权限没有校验；上传文件类型的检查
-// 处理表单及文件上传的中间件
-app.use(require('express-formidable')({
-    uploadDir: path.join(__dirname, config.uploadDir),// 上传文件目录
-    keepExtensions: true// 保留后缀
-}));
-
-// 上传结果处理
-require('./middlewares/uploader')(app)({
-    path: '/admin/upload'
-});
 
 // 路由
 routes(app);

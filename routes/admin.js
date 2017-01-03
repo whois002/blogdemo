@@ -38,8 +38,11 @@ router.get('/posts', function (req, res, next) {
 
 // GET /post
 router.get('/post', function (req, res, next) {
-    res.render('post', {
-        article: {}
+    Dictionary.find().then(function (sections) {
+        res.render('post', {
+            article: {},
+            sections: sections
+        });
     });
 });
 
@@ -52,8 +55,6 @@ router.get('/post/:postId', function (req, res, next) {
         Dictionary.find()
     ])
         .then(function (result) {
-            console.log('------Article');
-            console.log(result[0]);
             var article = result[0];
             var sections = result[1];
             if (!article) {
@@ -72,7 +73,7 @@ router.get('/post/:postId', function (req, res, next) {
 // POST /post 发表一篇文章
 router.post('/post', function (req, res, next) {
     var author = req.session.user._id;
-    var {_id, section, title, content, content, pv, status, cover} =req.fields;
+    var {_id, section, title, content, summary, pv, status, cover, tags} =req.fields;
 
     // 校验参数
     try {
@@ -87,7 +88,7 @@ router.post('/post', function (req, res, next) {
         return res.redirect('back');
     }
 
-    var post = {_id, section, title, content, content, pv, status, cover};
+    var post = {_id, section, title, content, summary, pv, status, cover, tags};
 
     Article.save(post)
         .then(function (nid) {
