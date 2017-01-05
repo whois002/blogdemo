@@ -2,6 +2,8 @@ var moment = require('moment');
 var marked = require('marked');
 var Article = require('../model/article.model');
 
+const _condition = {status: {$gt: 0}};
+
 const ArticleDao = {
     findById: function (postId) {
         return Article.findOne({_id: postId}).populate('section')
@@ -17,7 +19,18 @@ const ArticleDao = {
         return Article.find({tags: tagName}).exec();
     },
 
-    find: function (section, currentPage, itemsPerPage, sortName) {
+    lastArticles: function () {
+        return this.find({status: {$gt: 0}}, 1, 3);
+    },
+
+    find: function (condition, currentPage, itemsPerPage, sortName) {
+        if(typeof condition == 'number')
+        {
+            sortName = itemsPerPage;
+            itemsPerPage =currentPage;
+            currentPage = condition;
+            condition = null;
+        }
         var currentPage = (parseInt(currentPage) > 0) ? parseInt(currentPage) : 1;
         var itemsPerPage = (parseInt(itemsPerPage) > 0) ? parseInt(itemsPerPage) : 10;
         var startRow = (currentPage - 1) * itemsPerPage;
@@ -25,10 +38,8 @@ const ArticleDao = {
         var sort = sortName || "publish_time";
         sort = "-" + sort;
 
-        var condition = {status: {$gt: 0}};
-        if (section) {
-            condition = Object.assign(condition, {section: {$eq: section}});
-        }
+        condition = condition ? Object.assign({}, _condition, condition) : _condition;
+
         // console.log(condition);
         // console.log(startRow);
         // console.log(itemsPerPage);
@@ -38,6 +49,7 @@ const ArticleDao = {
             .limit(itemsPerPage)
             .sort(sort).exec();
     },
+
     // 创建,或更新一篇文章
     save: function (article) {
         article.status = article.status ? 1 : 0;

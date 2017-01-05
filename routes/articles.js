@@ -10,13 +10,14 @@ router.get('/', function (req, res, next) {
     var section = req.query.section;
     var currentPage = req.query.currentPage;
     var itemsPerPage = req.query.itemsPerPage;
-    var sortName = req.query.sortName;
 
-    Article.find(section, currentPage, itemsPerPage, sortName)
+    Article.find(section, currentPage, itemsPerPage)
         .then(
             function (articles) {
                 res.render('articles', {
-                    articles: articles
+                    articles: articles.map(function (article) {
+                        return article.info4List;
+                    })
                 });
             }).catch(
         function (err) {

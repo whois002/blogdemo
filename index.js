@@ -44,6 +44,9 @@ app.locals.blog = {
     description: pkg.description
 };
 
+//填充默认数据
+app.use(require('./middlewares/default'));
+
 // 添加模板必需的三个变量
 app.use(function (req, res, next) {
     res.locals.user = req.session.user;
@@ -66,17 +69,17 @@ require('./middlewares/uploader')(app)({
 
 
 // 正常请求的日志
-app.use(expressWinston.logger({
-    transports: [
-        new (winston.transports.Console)({
-            json: true,
-            colorize: true
-        }),
-        new winston.transports.File({
-            filename: 'logs/success.log'
-        })
-    ]
-}));
+// app.use(expressWinston.logger({
+//     transports: [
+//         new (winston.transports.Console)({
+//             json: true,
+//             colorize: true
+//         }),
+//         new winston.transports.File({
+//             filename: 'logs/success.log'
+//         })
+//     ]
+// }));
 
 
 // 路由

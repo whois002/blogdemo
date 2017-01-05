@@ -11,7 +11,7 @@ function statusFormat(status) {
 }
 
 function dateTimeFormat(dateTime) {
-    return moment(dateTime).format("YYYY-MM-DD HH:mm")
+    return moment(dateTime).format("YYYY年MM月DD")
 }
 
 var Schema = mongoose.Schema;
@@ -120,6 +120,32 @@ ArticleSchema
             'comment_count': this.comment_count,
             'publish_time': dateTimeFormat(this.publish_time),
             'updated': dateTimeFormat(this.updated)
+        };
+    });
+
+//文章列表
+ArticleSchema
+    .virtual('info4List')
+    .get(function () {
+        return {
+            '_id': this._id,
+            'title': this.title,
+            'summary': this.summary,
+            'section': this.section,
+            'cover': this.cover,
+            'status': statusFormat(this.status),
+            'publish_time': dateTimeFormat(this.publish_time)
+        };
+    });
+
+//首页的最近文章
+ArticleSchema
+    .virtual('info4LastList')
+    .get(function () {
+        return {
+            '_id': this._id,
+            'title': this.title,
+            'publish_time': dateTimeFormat(this.publish_time)
         };
     });
 

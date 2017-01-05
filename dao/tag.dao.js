@@ -1,11 +1,16 @@
 'use strict';
 
-var _ = require('lodash');
 var mongoose = require('mongoose');
 var Tag = require('../model/tag.model');
 
+const _condition = {status: {$gt: 0}};
 
 const TagDao = {
+    find: function (condition) {
+        condition = condition ? Object.assign({}, _condition, condition) : _condition;
+        Tag.find(condition).exec();
+    },
+
     save: function (tag) {
         tag.is_index = tag.is_index ? 1 : 0;
         tag.is_show = tag.is_show ? 1 : 0;
@@ -29,3 +34,5 @@ const TagDao = {
         return Tag.remove({_id: tagId});
     },
 }
+
+module.exports = TagDao;
