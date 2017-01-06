@@ -6,9 +6,30 @@ var Tag = require('../model/tag.model');
 const _condition = {status: {$gt: 0}};
 
 const TagDao = {
-    find: function (condition) {
+    findFrontList: function () {
+        return this.find(1, 15);
+    },
+
+    find: function (condition, currentPage, itemsPerPage, sortName) {
+        if (typeof condition == 'number') {
+            sortName = itemsPerPage;
+            itemsPerPage = currentPage;
+            currentPage = condition;
+            condition = null;
+        }
+
+        var currentPage = (parseInt(currentPage) > 0) ? parseInt(currentPage) : 1;
+        var itemsPerPage = (parseInt(itemsPerPage) > 0) ? parseInt(itemsPerPage) : 10;
+        var startRow = (currentPage - 1) * itemsPerPage;
+
+        var sort = sortName || "publish_time";
+        sort = "-" + sort;
+
         condition = condition ? Object.assign({}, _condition, condition) : _condition;
         Tag.find(condition).exec();
+        return Tag.find(condition).skip(startRow)
+            .limit(itemsPerPage)
+            .sort(sort).exec();
     },
 
     save: function (tag) {

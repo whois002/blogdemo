@@ -13,12 +13,12 @@ var TagSchema = new Schema({
         unique: true
     },
     is_index:{
-        type:Boolean,
-        default:false
+        type:Number,
+        default:1
     },
-    is_show: {
-        type:Boolean,
-        default:false
+    status: {
+        type:Number,
+        default:1
     },
     sort:{
         type:Number,

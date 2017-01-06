@@ -17,9 +17,12 @@
                             </time>
                         </div>
                     </div>
+                    <% if(article.cover){ %>
                     <div class="featured-media">
-                        <a href="/article/<%= article._id %>"><img src="/uploadImg/<%= article.cover %>" alt="<% article.title %>"></a>
+                        <a href="/article/<%= article._id %>"><img src="/uploadImg/<%= article.cover %>"
+                                                                   alt="<% article.title %>"></a>
                     </div>
+                    <% } %>
                     <div class="post-content">
                         <p><%= article.summary %></p>
                     </div>

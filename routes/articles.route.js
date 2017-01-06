@@ -12,18 +12,13 @@ router.get('/', function (req, res, next) {
     var itemsPerPage = req.query.itemsPerPage;
 
     Article.find(section, currentPage, itemsPerPage)
-        .then(
-            function (articles) {
-                res.render('articles', {
-                    articles: articles.map(function (article) {
-                        return article.info4List;
-                    })
-                });
-            }).catch(
-        function (err) {
-            console.error(err);
-            res.send(err);
-        });
+        .then(function (articles) {
+            res.render('articles', {
+                articles: articles.map(function (article) {
+                    return article.info4List;
+                })
+            });
+        }).catch(next);
 
 });
 

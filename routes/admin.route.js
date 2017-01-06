@@ -18,21 +18,15 @@ router.get('/posts', function (req, res, next) {
     var section = req.query.section;
     var currentPage = req.query.currentPage;
     var itemsPerPage = req.query.itemsPerPage;
-    var sortName = req.query.sortName;
 
-    Article.find(section, currentPage, itemsPerPage, sortName)
+    Article.find(section, currentPage, itemsPerPage)
         .then(function (articles) {
             res.render('posts', {
                 articles: articles.map(function (article) {
                     return article.postViewInfo;
                 })
             });
-        }).catch(
-        function (err) {
-            console.error(err);
-            res.send(err);
-            next(err);
-        });
+        }).catch(next);
 
 });
 
@@ -73,12 +67,7 @@ router.get('/post/:postId', function (req, res, next) {
 // POST /post 发表一篇文章
 router.post('/post', function (req, res, next) {
     var author = req.session.user._id;
-    var _id = req.fields._id;
-    var section = req.fields.section;
-    var title = req.fields.title;
-    var content = req.fields.content;
-    var pv = req.fields.pv;
-    var status = req.fields.status;
+    var {_id, section, title, content, summary, pv, status, cover, tags} =req.fields;
 
     // 校验参数
     try {
@@ -93,15 +82,7 @@ router.post('/post', function (req, res, next) {
         return res.redirect('back');
     }
 
-    var post = {
-        _id: _id,
-        section:section,
-        author: author,
-        title: title,
-        content: content,
-        status: status,
-        pv: pv
-    };
+    var post = {_id, section, title, content, summary, pv, status, cover, tags};
 
     Article.save(post)
         .then(function (nid) {

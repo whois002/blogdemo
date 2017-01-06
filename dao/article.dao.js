@@ -9,18 +9,22 @@ const ArticleDao = {
         return Article.findOne({_id: postId}).populate('section')
         //.select('title summary section cover statusFormat visit_count comment_count publish_time content')
             .exec().then(function (article) {
-                article.tags = article.tags ? article.tags.join(" ") : '';
+                article.tags = article.tags ? article.tags.join(' ') : '';
                 return article;
             });
     },
 
-    findByTag: function (tagName, currentPage, itemsPerPage, sortName) {
+    findByTag: function (tagName, currentPage, itemsPerPage) {
         var condition = {tags: tagName}
-        return Article.find({tags: tagName}).exec();
+        return this.find({tags: tagName}, currentPage, itemsPerPage);
+    },
+
+    findBySection: function (section, currentPage, itemsPerPage) {
+        return this.find({section}, currentPage, itemsPerPage);
     },
 
     lastArticles: function () {
-        return this.find({status: {$gt: 0}}, 1, 3);
+        return this.find(1, 3);
     },
 
     find: function (condition, currentPage, itemsPerPage, sortName) {
