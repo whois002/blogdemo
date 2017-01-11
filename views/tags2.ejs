@@ -1,0 +1,62 @@
+<%- include('../header') %>
+<div class="container nav">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <a href="/posts"><h1>myblog</h1></a>
+            <p>my first blog</p>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <ul>
+        <li><a href="/admin/tag">新建</a></li>
+    </ul>
+</div>
+<section class="content-wrap">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2">名称</div>
+            <div class="col-md-2">显示名称</div>
+            <div class="col-md-1">
+                是否首页显示
+            </div>
+            <div class="col-md-1">
+                排序
+            </div>
+            <div class="col-md-2">
+                发布状态
+            </div>
+            <div class="col-md-2">
+                发布时间
+            </div>
+            <div class="col-md-2">
+                操作
+            </div>
+        </div>
+        <% tags.forEach(function (tag) { %>
+        <div class="row">
+            <div class="col-md-2"><a href="/tag/<%= tag._id %>"><%= tag.name %></a></div>
+            <div class="col-md-1">
+                <%= tag.text %>
+            </div>
+            <div class="col-md-1">
+                <%= tag.is_index %>
+            </div>
+            <div class="col-md-1">
+                <%= tag.sort %>
+            </div>
+            <div class="col-md-2">
+                <%= tag.status %>
+            </div>
+            <div class="col-md-2">
+                <%= tag.created %>
+            </div>
+            <div class="col-md-2">
+                <a href="/admin/tag/<%= tag._id %>">编辑</a>
+                <a href="/admin/tag/remove/<%= tag._id %>">禁用</a>
+            </div>
+        </div>
+        <% }) %>
+    </div>
+</section>
+<%- include('../footer') %>

@@ -3,7 +3,8 @@ var router = express.Router();
 
 var Article = require('../dao/article.dao');
 var Comment = require('../dao/comment.dao');
-var Dictionary = require('../dao/dictionary.dao')
+var Dictionary = require('../dao/dictionary.dao');
+var Tag = require('../dao/tag.dao');
 
 // GET /admin
 router.get('/', function (req, res, next) {
@@ -121,6 +122,23 @@ router.get('/comment/remove/:commentId', function (req, res, next) {
             res.redirect('back');
         })
         .catch(next);
+});
+
+
+// GET /tags
+//   eg: GET /tags?status=xxx
+router.get('/tags', function (req, res, next) {
+
+    var status = req.query.status;
+    var currentPage = req.query.currentPage;
+    var itemsPerPage = req.query.itemsPerPage;
+
+    Tag.find(status, currentPage, itemsPerPage)
+        .then(function (tags) {
+            //res.send(tags);
+            res.render('admin/tags', {tags});
+        }).catch(next);
+
 });
 
 module.exports = router;

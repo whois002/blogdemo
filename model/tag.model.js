@@ -12,6 +12,9 @@ var TagSchema = new Schema({
         type:String,
         unique: true
     },
+    text:{						//标签显示名称
+        type:String
+    },
     is_index:{
         type:Number,
         default:1
@@ -23,6 +26,10 @@ var TagSchema = new Schema({
     sort:{
         type:Number,
         default:1
+    },
+    created: {
+        type: Date,
+        default: Date.now
     }
 });
 

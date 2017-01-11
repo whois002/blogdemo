@@ -3,11 +3,19 @@
 var mongoose = require('mongoose');
 var Tag = require('../model/tag.model');
 
-const _condition = {status: {$gt: 0}};
 
 const TagDao = {
     findFrontList: function () {
-        return this.find(1, 15);
+        return this.find({status: {$gt: 0}}, 1, 15);
+    },
+
+    findEndList: function (enable, currentPage, itemsPerPage) {
+        var condition = null;
+        if (enable === 0)
+            condition = {status: {$et: 0}};
+        else if (enable === 1)
+            condition = {status: {$gt: 0}};
+        return this.find(condition, currentPage, itemsPerPage);
     },
 
     find: function (condition, currentPage, itemsPerPage, sortName) {
@@ -25,7 +33,7 @@ const TagDao = {
         var sort = sortName || "publish_time";
         sort = "-" + sort;
 
-        condition = condition ? Object.assign({}, _condition, condition) : _condition;
+        //condition = condition ? Object.assign({}, condition) : null;
         Tag.find(condition).exec();
         return Tag.find(condition).skip(startRow)
             .limit(itemsPerPage)
