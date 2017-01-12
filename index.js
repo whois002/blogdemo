@@ -86,17 +86,17 @@ require('./middlewares/uploader')(app)({
 routes(app);
 
 // 错误请求的日志
-app.use(expressWinston.errorLogger({
-    transports: [
-        new winston.transports.Console({
-            json: true,
-            colorize: true
-        }),
-        new winston.transports.File({
-            filename: 'logs/error.log'
-        })
-    ]
-}));
+// app.use(expressWinston.errorLogger({
+//     transports: [
+//         new winston.transports.Console({
+//             json: true,
+//             colorize: true
+//         }),
+//         new winston.transports.File({
+//             filename: 'logs/error.log'
+//         })
+//     ]
+// }));
 
 // error page
 app.use(function (err, req, res, next) {

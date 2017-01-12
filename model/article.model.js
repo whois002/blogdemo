@@ -2,17 +2,11 @@
  * 文章表
  */
 'use strict';
-var moment = require('moment');
 //var objectIdToTimestamp = require('objectid-to-timestamp');
+var common = require('../utils/commonFun');
 var mongoose = require('mongoose');
 
-function statusFormat(status) {
-    return status ? '发布' : '删除';
-}
 
-function dateTimeFormat(dateTime) {
-    return moment(dateTime).format("YYYY年MM月DD")
-}
 
 var Schema = mongoose.Schema;
 
@@ -115,11 +109,11 @@ ArticleSchema
             'summary': this.summary,
             'section': this.section,
             'cover': this.cover,
-            'status': statusFormat(this.status),
+            'status': common.statusFormat(this.status),
             'visit_count': this.visit_count,
             'comment_count': this.comment_count,
-            'publish_time': dateTimeFormat(this.publish_time),
-            'updated': dateTimeFormat(this.updated)
+            'publish_time': common.dateTimeFormat(this.publish_time),
+            'updated': common.dateTimeFormat(this.updated)
         };
     });
 
@@ -133,8 +127,8 @@ ArticleSchema
             'summary': this.summary,
             'section': this.section,
             'cover': this.cover,
-            'status': statusFormat(this.status),
-            'publish_time': dateTimeFormat(this.publish_time)
+            'status': common.statusFormat(this.status),
+            'publish_time': common.dateTimeFormat(this.publish_time)
         };
     });
 
@@ -145,7 +139,7 @@ ArticleSchema
         return {
             '_id': this._id,
             'title': this.title,
-            'publish_time': dateTimeFormat(this.publish_time)
+            'publish_time': common.dateTimeFormat(this.publish_time)
         };
     });
 

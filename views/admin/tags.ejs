@@ -17,13 +17,13 @@
         <div class="row">
             <div class="col-md-2">名称</div>
             <div class="col-md-2">显示名称</div>
-            <div class="col-md-1">
+            <div class="col-md-2">
                 是否首页显示
             </div>
             <div class="col-md-1">
                 排序
             </div>
-            <div class="col-md-2">
+            <div class="col-md-1">
                 发布状态
             </div>
             <div class="col-md-2">
@@ -36,16 +36,16 @@
         <% tags.forEach(function (tag) { %>
         <div class="row">
             <div class="col-md-2"><a href="/tag/<%= tag._id %>"><%= tag.name %></a></div>
-            <div class="col-md-1">
+            <div class="col-md-2">
                 <%= tag.text %>
             </div>
-            <div class="col-md-1">
+            <div class="col-md-2">
                 <%= tag.is_index %>
             </div>
             <div class="col-md-1">
                 <%= tag.sort %>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-1">
                 <%= tag.status %>
             </div>
             <div class="col-md-2">

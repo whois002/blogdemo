@@ -5,6 +5,10 @@ var Tag = require('../model/tag.model');
 
 
 const TagDao = {
+    findById: function (id) {
+        return Tag.findOne({_id: id}).exec();
+    },
+
     findFrontList: function () {
         return this.find({status: {$gt: 0}}, 1, 15);
     },

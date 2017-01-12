@@ -1,0 +1,53 @@
+<%- include('../header') %>
+<div class="container nav">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <a href="/posts"><h1>myblog</h1></a>
+            <p>my first blog</p>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <form role="form" method="post" action="/admin/post">
+        <div class="form-group">
+            <label for="title">名称</label>
+            <input type="text" name="name" value="<%= tag.name %>" id="title" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <label for="text">显示名称</label>
+            <input type="text" value="<%= tag.text %>" name="text" id="text" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <% if(tag.status) { %>
+            <input type="checkbox" value="1" name="status" checked="checked"/>
+            <% } else { %>
+            <input type="checkbox" value="1" name="status"/>
+            <% } %>
+            发布
+        </div>
+        <div class="form-group">
+            <label for="sort">排序</label>
+            <input type="text" value="<%= tag.sort %>" name="sort" class="form-control"/>
+        </div>
+        <div class="form-group">
+            <% if(tag.is_index) { %>
+            <input type="checkbox" value="1" name="is_index" checked="checked"/>
+            <% } else { %>
+            <input type="checkbox" value="1" name="is_index"/>
+            <% } %>
+            是否首页显示
+        </div>
+        <div class="form-group">
+            <label for="content">发布时间</label>
+            <input type="text" value="<%= tag.created %>" name="created" id="created" class="form-control"/>
+        </div>
+        <input type="submit" class="btn btn-default btn-block" value="发布"/>
+        <input type="hidden" value="<%= tag._id %>" name="_id">
+    </form>
+</div>
+
+<script type="text/javascript">
+
+</script>
+<%- include('../footer') %>

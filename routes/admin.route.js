@@ -136,7 +136,23 @@ router.get('/tags', function (req, res, next) {
     Tag.find(status, currentPage, itemsPerPage)
         .then(function (tags) {
             //res.send(tags);
+            tags = tags.map(function (tag) {
+                return tag.info4List;
+            });
             res.render('admin/tags', {tags});
+        }).catch(next);
+
+});
+
+// GET /tags
+//   eg: GET /tag/id
+router.get('/tag/:id', function (req, res, next) {
+
+    var id = req.params.id;
+
+    Tag.findById(id)
+        .then(function (tag) {
+           res.render('admin/tag', {tag});
         }).catch(next);
 
 });
