@@ -10,15 +10,15 @@ const TagDao = {
     },
 
     findFrontList: function () {
-        return this.find({status: {$gt: 0}}, 1, 15);
+        return this.find({status: 1, is_index: 1}, 1, 15);
     },
 
     findEndList: function (enable, currentPage, itemsPerPage) {
         var condition = null;
         if (enable === 0)
-            condition = {status: {$et: 0}};
+            condition = {status: 0};
         else if (enable === 1)
-            condition = {status: {$gt: 0}};
+            condition = {status: 1};
         return this.find(condition, currentPage, itemsPerPage);
     },
 
@@ -48,6 +48,10 @@ const TagDao = {
         tag.is_index = tag.is_index ? 1 : 0;
         tag.is_show = tag.is_show ? 1 : 0;
         tag.sort = tag.sort ? tag.sort : 1;
+        console.log('tag.created');
+        console.log(tag.created);
+        tag.created = tag.created ? tag.created : new Date();
+        console.log(tag.created);
         if (tag._id) {
             var id = tag._id;
             //delete  article._id;

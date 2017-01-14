@@ -22,7 +22,7 @@ router.get('/posts', function (req, res, next) {
 
     Article.find(section, currentPage, itemsPerPage)
         .then(function (articles) {
-            res.render('posts', {
+            res.render('admin/posts', {
                 articles: articles.map(function (article) {
                     return article.postViewInfo;
                 })
@@ -34,7 +34,7 @@ router.get('/posts', function (req, res, next) {
 // GET /post
 router.get('/post', function (req, res, next) {
     Dictionary.find().then(function (sections) {
-        res.render('post', {
+        res.render('admin/post', {
             article: {},
             sections: sections
         });
@@ -56,7 +56,7 @@ router.get('/post/:postId', function (req, res, next) {
                 throw new Error('该文章不存在');
             }
 
-            res.render('post', {
+            res.render('admin/post', {
                 article: article,
                 sections: sections
             });
@@ -129,6 +129,7 @@ router.get('/comment/remove/:commentId', function (req, res, next) {
 //   eg: GET /tags?status=xxx
 router.get('/tags', function (req, res, next) {
 
+    var autocomplete = req.query.autocomplete;
     var status = req.query.status;
     var currentPage = req.query.currentPage;
     var itemsPerPage = req.query.itemsPerPage;
@@ -136,15 +137,23 @@ router.get('/tags', function (req, res, next) {
     Tag.find(status, currentPage, itemsPerPage)
         .then(function (tags) {
             //res.send(tags);
-            tags = tags.map(function (tag) {
-                return tag.info4List;
-            });
-            res.render('admin/tags', {tags});
+            if(autocomplete)
+            {
+                tags = tags.map(function (tag) {
+                    return tag.name;
+                });
+                res.send(tags.join('\n'));
+            }
+            else {
+                tags = tags.map(function (tag) {
+                    return tag.info4List;
+                });
+                res.render('admin/tags', {tags});
+            }
         }).catch(next);
 
 });
 
-// GET /tags
 //   eg: GET /tag/id
 router.get('/tag/:id', function (req, res, next) {
 
@@ -152,7 +161,42 @@ router.get('/tag/:id', function (req, res, next) {
 
     Tag.findById(id)
         .then(function (tag) {
-           res.render('admin/tag', {tag});
+            res.render('admin/tag', {tag});
+        }).catch(next);
+
+});
+
+
+//   eg: GET /tag/
+router.get('/tag/', function (req, res, next) {
+    res.render('admin/tag', {tag: {}});
+});
+
+//   eg: Post /tag/
+router.post('/tag/', function (req, res, next) {
+    var {_id, name, text, status, sort, is_index, created} = req.fields;
+    // 校验参数
+    try {
+
+        if (!name.length) {
+            throw new Error('请填写名称');
+        }
+        if (!text.length) {
+            throw new Error('请填写显示名称');
+        }
+        status = status ? status : 0;
+    } catch (e) {
+        req.flash('error', e.message);
+        return res.redirect('back');
+    }
+
+    var tag = {_id, name, text, status, sort, is_index, created};
+
+    Tag.save(tag)
+        .then(function (nid) {
+            req.flash('success', 'Tag编辑成功');
+            // 编辑成功后跳转到上一页
+            res.redirect(`/admin/tag/${nid}`);
         }).catch(next);
 
 });

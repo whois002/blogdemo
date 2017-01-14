@@ -59,7 +59,7 @@
         </div>
         <div class="form-group">
             <label for="tags">Tag</label>
-            <input type="text" value="<%= article.tags %>" name="tags" class="form-control"/>
+            <input type="text" value="<%= article.tags %>" name="tags" class="form-control" id="tags"/>
         </div>
         <input type="submit" class="btn btn-default btn-block" value="发布"/>
         <input type="hidden" value="<%= article._id %>" name="_id">
@@ -78,7 +78,7 @@
                 $list = $("#thelist"),
                 $btn = $("#ctlBtn"),
                 state = "pending",
-                cover =$("#cover");
+                cover = $("#cover");
 
         var uploader = WebUploader.create({
             auto: true,
@@ -207,51 +207,13 @@
             return false;
         });
 
-
-//        $('#form-article-add').submit(function () {
-//            if (!$("#Title").val()) {
-//                alert("文章标题必须填写！");
-//                return false;
-//            }
-//
-//            if (!$("#Category").val()) {
-//                alert("分类栏目必须选择！");
-//                return false;
-//            }
-//
-//            jQuery.ajax({
-//
-//                url: '/Admin/Post/ArticleSave',
-//
-//                data: $('#form-article-add').serialize(),
-//
-//                type: "POST",
-//
-//                beforeSend: function () {
-//
-//                },
-//                error: function (data) {
-//                    console.log(data);
-//                    alert("请求失败");
-//                },
-//                success: function (data) {
-//                    console.log(data);
-//                    if (data && data.success) {
-//                        //window.location = "/Admin/ArticleList";
-//                        alert("保存成功");
-//                        closeTab();
-//                    }
-//                    else {
-//                        alert("保存失败！");
-//                    }
-//                }
-//
-//            });
-//
-//            return false;
-//
-//        });
-
+        $('#tags').tagsInput({
+            //autocomplete_url:'test/fake_plaintext_endpoint.html' //jquery.autocomplete (not jquery ui)
+            width: '100%',
+            height: '100%',
+            autocomplete: {minChars: 1},
+            autocomplete_url: '/admin/tags?autocomplete=1' // jquery ui autocomplete requires a json endpoint
+        });
     });
 </script>
-<%- include('footer') %>
+<%- include('../footer') %>

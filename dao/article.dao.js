@@ -9,7 +9,7 @@ const ArticleDao = {
         return Article.findOne({_id: postId}).populate('section')
         //.select('title summary section cover statusFormat visit_count comment_count publish_time content')
             .exec().then(function (article) {
-                article.tags = article.tags ? article.tags.join(' ') : '';
+                article.tags = article.tags ? article.tags.join(',') : '';
                 return article;
             });
     },
@@ -57,7 +57,7 @@ const ArticleDao = {
     // 创建,或更新一篇文章
     save: function (article) {
         article.status = article.status ? 1 : 0;
-        article.tags = Array.isArray(article.tags) ? article.tags : article.tags.split(" ");
+        article.tags = Array.isArray(article.tags) ? article.tags : article.tags.split(",");
         if (article._id) {
             var id = article._id;
             //delete  article._id;
