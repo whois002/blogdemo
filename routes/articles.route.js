@@ -11,7 +11,7 @@ router.get('/', function (req, res, next) {
     var currentPage = req.query.currentPage;
     var itemsPerPage = req.query.itemsPerPage;
 
-    Article.find(section, currentPage, itemsPerPage)
+    Article.findBySection(section, currentPage, itemsPerPage)
         .then(function (articles) {
             res.render('articles', {
                 articles: articles.map(function (article) {

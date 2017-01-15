@@ -4,9 +4,34 @@ var Article = require('../model/article.model');
 
 const _condition = {status: {$gt: 0}};
 
+const _find = function (condition, currentPage, itemsPerPage, polulate, sortName) {
+    if (typeof condition == 'number') {
+        sortName = itemsPerPage;
+        itemsPerPage = currentPage;
+        currentPage = condition;
+        condition = null;
+    }
+    var currentPage = (parseInt(currentPage) > 0) ? parseInt(currentPage) : 1;
+    var itemsPerPage = (parseInt(itemsPerPage) > 0) ? parseInt(itemsPerPage) : 10;
+    var startRow = (currentPage - 1) * itemsPerPage;
+
+    var sort = sortName || "publish_time";
+    sort = "-" + sort;
+
+    condition = condition ? Object.assign({}, _condition, condition) : _condition;
+
+    var query = Article.find(condition).skip(startRow)
+        .limit(itemsPerPage)
+        .sort(sort);
+
+    query = polulate ? query.populate(polulate) : query;
+
+    return query;
+};
+
 const ArticleDao = {
     findById: function (postId) {
-        return Article.findOne({_id: postId}).populate('section')
+        return Article.findOne({_id: postId}).populate({path: 'section', match: {status: 1}})
         //.select('title summary section cover statusFormat visit_count comment_count publish_time content')
             .exec().then(function (article) {
                 article.tags = article.tags ? article.tags.join(',') : '';
@@ -16,42 +41,16 @@ const ArticleDao = {
 
     findByTag: function (tagName, currentPage, itemsPerPage) {
         var condition = {tags: tagName}
-        return this.find({tags: tagName}, currentPage, itemsPerPage);
+        return _find({tags: tagName}, currentPage, itemsPerPage, {path: 'section', match: {status: 1}}).exec();
     },
 
     findBySection: function (section, currentPage, itemsPerPage) {
-        return this.find({section}, currentPage, itemsPerPage);
+        var condition = section ? {section} : null;
+        return _find(condition, currentPage, itemsPerPage, {path: 'section', match: {status: 1}}).exec();
     },
 
     lastArticles: function () {
-        return this.find(1, 3);
-    },
-
-    find: function (condition, currentPage, itemsPerPage, sortName) {
-        if(typeof condition == 'number')
-        {
-            sortName = itemsPerPage;
-            itemsPerPage =currentPage;
-            currentPage = condition;
-            condition = null;
-        }
-        var currentPage = (parseInt(currentPage) > 0) ? parseInt(currentPage) : 1;
-        var itemsPerPage = (parseInt(itemsPerPage) > 0) ? parseInt(itemsPerPage) : 10;
-        var startRow = (currentPage - 1) * itemsPerPage;
-
-        var sort = sortName || "publish_time";
-        sort = "-" + sort;
-
-        condition = condition ? Object.assign({}, _condition, condition) : _condition;
-
-        // console.log(condition);
-        // console.log(startRow);
-        // console.log(itemsPerPage);
-        // console.log(sort);
-        // console.log('------------------');
-        return Article.find(condition).skip(startRow)
-            .limit(itemsPerPage)
-            .sort(sort).exec();
+        return _find(1, 3).exec();
     },
 
     // 创建,或更新一篇文章
